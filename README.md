@@ -1,18 +1,50 @@
-H265 command line video converter
-=======================
+# Jellyfin Video Format Optimizer
 
-Easy to use script to compress given video to modern and high efficiency h265 standard. It uses ffmpeg program and makes possible to convert all files of your video library with a single command. It reduces library size on the computer without losing its quality.
+A set of command-line tools that help ensure your media files are encoded in a format fully compatible with **Jellyfin direct play**, without triggering CPU-heavy transcoding.
 
+These scripts allow you to:
 
-Requirements
------
-- Linux operation system
+- Scan and detect non-optimal video files
+- Convert videos (or entire libraries) into a Jellyfin-friendly format
+- Minimize transcoding load on your media server
+- Standardize old or inconsistent video collections
+
+## Requirements
+
 - ffmpeg installed
 
-Usage
------
+---
 
-You can run the script with the following options:
+## Included Tools
+
+### **1. jellyfin-no-transcode-check.sh**
+
+Analyzes a single video or directory and reports whether the files will play without transcoding in Jellyfin.
+
+Example:
+
+```sh
+./jellyfin-no-transcode-check.sh video.mkv
+```
+
+### **2. jellyfin-transcode-optimize.sh**
+
+Converts video files to the recommended Jellyfin-friendly format.
+
+Example (single file):
+
+```sh
+./jellyfin-transcode-optimize.sh video.mkv
+```
+
+Recursive conversion:
+
+```sh
+./jellyfin-transcode-optimize.sh -r ~/Videos/
+```
+
+Options:
+
 <pre>
   -r       Convert files recursivly.
   -d       Remove input file after convert.
@@ -20,24 +52,26 @@ You can run the script with the following options:
   -h       Show options.
 </pre>
 
-Define linux alias
------
+## Define linux alias
 
 To use script as a linux console command make the following:
 
 - open .bashrc
-````sh
-vi ~/.bashrc
-````
 
-- add following line to the file and modify location of `hevc.sh`
-````sh
-alias hevc='~/repo/h265-shell-converter/hevc.sh'
-````
+```sh
+vi ~/.bashrc
+```
+
+- add following lines and set correct path to the script files:
+
+```sh
+alias jfcheck='/path/to/jellyfin-no-transcode-check.sh'
+alias jfconvert='/path/to/jellyfin-transcode-optimize.sh'
+```
+
 - restart the console
 
-License
------
+## License
 
 Copyright 2021 Boguslaw Proszkowiec
 
