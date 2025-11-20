@@ -24,23 +24,32 @@ function usage  {
 
 function convert {
 	local FILE_PATH=${1}
-	local DIR="$(dirname "${FILE_PATH}")"
-	local FILE="$(basename "${FILE_PATH}")"
-	local NEW_FILE=$(echo ${OLD_FILE} | sed 's/\.[^.]*$/ x264&/')
-	local CMD="ffmpeg -i '${FILE_PATH}' ${FFMPEG_OPTS} '${DIR}/${FILE%.*}.mp4'"
-	eval "$CMD"
+	local DIR="$(pwd "${FILE_PATH}")"
+	local FULL_FILENAME="$(basename "${FILE_PATH}")"
+	local FILE_EXT="${FULL_FILENAME##*.}"
 
+	if [[ ${FILE_EXT} == 'mp4' ]]; then
+		FILE_EXT='opt.mp4'
+	else
+		FILE_EXT='mp4'
+	fi
+
+	local OUT_FILE="$(echo ${FULL_FILENAME%.*} | sed -E 's/([HhXx])265/\1264/g').${FILE_EXT}"
+	cmd=("ffmpeg -i '${DIR}/${FULL_FILENAME}' ${FFMPEG_OPTS} '${DIR}/${OUT_FILE}'")
+	echo "Executing: ${cmd[*]}"
+	eval "${cmd}"
 	# Check to see if command succeeded
 	if [[ "${?}" -ne 0 ]]
 	then
-  		echo "Error occurred while converting ${OLD_FILE}" >&2
+  		echo "Error occurred while converting ${FULL_FILENAME}" >&2
   		exit 1
 	fi
 
 	# If delete flag is set remove original file
 	if [[ ${DELETE_OLD} == 'true' ]]
 	then
-		mv "${DIR}/${NEW_FILE}" "${DIR}/${OLD_FILE}"
+		rm "${DIR}/${FULL_FILENAME}"
+		mv "${DIR}/${OUT_FILE}" "${DIR}/${FULL_FILENAME%.*}.mp4"
 	fi
 }
 
