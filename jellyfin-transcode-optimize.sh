@@ -49,7 +49,9 @@ function convert {
 	if [[ ${DELETE_OLD} == 'true' ]]
 	then
 		rm "${DIR}/${FULL_FILENAME}"
-		mv "${DIR}/${OUT_FILE}" "${DIR}/${FULL_FILENAME%.*}.mp4"
+		if [ "${DIR}/${OUT_FILE}" != "${DIR}/${FULL_FILENAME%.*}.mp4" ]; then
+			mv "${DIR}/${OUT_FILE}" "${DIR}/${FULL_FILENAME%.*}.mp4"
+		fi
 	fi
 }
 
